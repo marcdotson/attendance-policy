@@ -1,15 +1,18 @@
-# ASC Template
+# Attendance Policy Evaluation
 
 
 ## Description
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-mollit anim id est laborum.
+This project evaluates the effectiveness of High School A’s attendance
+policy implemented during the first trimester of the 2024-2025 school
+year. Not only can we compare the change in attendance from the first
+trimester to the previous year’s attendance at High School A, the
+implementation of the policy by High School A alone serves as a kind of
+natural experiment, allowing comparison to High School B’s attendance
+during the same trimester where High School B serves as a control group.
+We will evaluate how the attendance policy has impacted different groups
+of students (e.g., demographic/income splits) by these same comparisons
+in and across high schools.
 
 ## Project Organization
 
