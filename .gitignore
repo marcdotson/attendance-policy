@@ -18,6 +18,7 @@ private/*
 data/*.xlsx
 
 # Files
+data/*.xlsx
 *.pdf
 *.csv
 code/src/*
