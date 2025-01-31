@@ -14,12 +14,10 @@
 output/*
 private/*
 
-# Data
-data/*.xlsx
-
 # Files
 *.pdf
 *.csv
+*.xlsx
 code/src/*
 !code/src/*.R
 !code/src/*.py
