@@ -81,3 +81,14 @@ plt.title('Total Snow Comparison')
 plt.show()
 
 
+# Bar chart for snow days
+plt.figure(figsize=(8, 6))
+sns.barplot(x='Year', y='Snow Days', data=weather_stats)
+plt.title('Snow Days Comparison')
+plt.show()
+
+# Bar chart for rain days
+plt.figure(figsize=(8, 6))
+sns.barplot(x='Year', y='Rain Days', data=weather_stats)
+plt.title('Rain Days Comparison')
+plt.show()
