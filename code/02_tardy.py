@@ -145,8 +145,8 @@ gc_diff = mean_gc_2024 - mean_gc_2023
 sv_diff = mean_sv_2024 - mean_sv_2023
 did = sv_diff - gc_diff
 
-print(f'Mean GC absences before: {mean_gc_2023:.2f}')
-print(f'Mean SV absences before: {mean_sv_2023:.2f}')
-print(f'Mean GC absences after: {mean_gc_2024:.2f}')
-print(f'Mean SV absences after: {mean_sv_2024:.2f}')
-print(f'DID in mean absences: {did:.2f}')
+print(f'Mean GC tardies before: {mean_gc_2023:.2f}')
+print(f'Mean SV tardies before: {mean_sv_2023:.2f}')
+print(f'Mean GC tardies after: {mean_gc_2024:.2f}')
+print(f'Mean SV tardies after: {mean_sv_2024:.2f}')
+print(f'DID in mean tardies: {did:.2f}')
