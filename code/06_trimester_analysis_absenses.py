@@ -36,24 +36,6 @@ print("SV 2023 Averages:\n", sv_2023_avg_t2)
 print("GC 2024 Averages:\n", gc_2024_avg_t2)
 print("SV 2024 Averages:\n", sv_2024_avg_t2)
 
-#make the line chart
-plt.figure(figsize=(10,6))
-
-#each trimester with different colors
-plt.plot(gc_2023_avg_t1.index, gc_2023_avg_t1.values, label='GC 23-24 T1', marker='o', color='blue')
-plt.plot(sv_2023_avg_t1.index, sv_2023_avg_t1.values, label='SV 23-24 T1', marker='o', color='green')
-plt.plot(gc_2024_avg_t1.index, gc_2024_avg_t1.values, label='GC 24-25 T1', marker='o', color='red')
-plt.plot(sv_2024_avg_t1.index, sv_2024_avg_t1.values, label='SV 24-25 T1', marker='o', color='orange')
-
-plt.plot(gc_2023_avg_t2.index, gc_2023_avg_t2.values, label='GC 23-24 T2', marker='o', color='pink')
-plt.plot(sv_2023_avg_t2.index, sv_2023_avg_t2.values, label='SV 23-24 T2', marker='o', color='yellow')
-plt.plot(gc_2024_avg_t2.index, gc_2024_avg_t2.values, label='GC 24-25 T2', marker='o', color='purple')
-plt.plot(sv_2024_avg_t2.index, sv_2024_avg_t2.values, label='SV 24-25 T2', marker='o', color='black')
-#labels and title
-plt.xlabel('Period')
-plt.ylabel('Average Absences')
-plt.title('Average Absences Per Period')
-plt.legend()
 
 #make the line chart
 plt.figure(figsize=(10,6))
@@ -92,24 +74,57 @@ print("Difference (SV - GC) 2024 T2:\n", diff_2024_t2)
 # Make the line chart
 plt.figure(figsize=(12, 8))
 
+# Make the line chart for T1 and T2 side by side
+fig, axes = plt.subplots(1, 2, figsize=(18, 8), sharey=True)
 
-# Plotting the differences
-plt.plot(diff_2023_t1.index, diff_2023_t1.values, label='Diff 23-24 (SV-GC) T1', marker='x', color='purple', linestyle='--')
-plt.plot(diff_2024_t1.index, diff_2024_t1.values, label='Diff 24-25 (SV-GC) T1', marker='x', color='brown', linestyle='--')
-# Plotting the differences
-plt.plot(diff_2023_t2.index, diff_2023_t2.values, label='Diff 23-24 (SV-GC) T2', marker='x', color='blue', linestyle='--')
-plt.plot(diff_2024_t2.index, diff_2024_t2.values, label='Diff 24-25 (SV-GC) T2', marker='x', color='green', linestyle='--')
-# Labels and title
-plt.xlabel('Period')
-plt.ylabel('Average Absences / Difference')
-plt.title('Average Absences Per Period and SV-GC Differences')
-plt.legend()
-plt.grid(True)
+# Plotting T1 differences
+axes[0].plot(diff_2023_t1.index, diff_2023_t1.values, label='Diff 23-24 (SV-GC) T1', marker='x', color='purple', linestyle='--')
+axes[0].plot(diff_2024_t1.index, diff_2024_t1.values, label='Diff 24-25 (SV-GC) T1', marker='x', color='brown', linestyle='--')
+axes[0].set_xlabel('Period')
+axes[0].set_ylabel('Average Absences / Difference')
+axes[0].set_title('T1 SV-GC Differences')
+axes[0].legend()
+axes[0].grid(True)
 
+# Plotting T2 differences
+axes[1].plot(diff_2023_t2.index, diff_2023_t2.values, label='Diff 23-24 (SV-GC) T2', marker='x', color='blue', linestyle='--')
+axes[1].plot(diff_2024_t2.index, diff_2024_t2.values, label='Diff 24-25 (SV-GC) T2', marker='x', color='green', linestyle='--')
+axes[1].set_xlabel('Period')
+axes[1].set_title('T2 SV-GC Differences')
+axes[1].legend()
+axes[1].grid(True)
 
-# Show the plot
+# Adjust layout and show the plot
 plt.tight_layout()
 plt.show()
+# Make the line chart for T1 and T2 side by side
+fig, axes = plt.subplots(1, 2, figsize=(18, 8), sharey=True)
+
+# Plotting T1 data
+axes[0].plot(gc_2023_avg_t1.index, gc_2023_avg_t1.values, label='GC 23-24 T1', marker='o', color='blue')
+axes[0].plot(sv_2023_avg_t1.index, sv_2023_avg_t1.values, label='SV 23-24 T1', marker='o', color='green')
+axes[0].plot(gc_2024_avg_t1.index, gc_2024_avg_t1.values, label='GC 24-25 T1', marker='o', color='red')
+axes[0].plot(sv_2024_avg_t1.index, sv_2024_avg_t1.values, label='SV 24-25 T1', marker='o', color='orange')
+axes[0].set_xlabel('Period')
+axes[0].set_ylabel('Average Absences')
+axes[0].set_title('Average Absences Per Period - T1')
+axes[0].legend()
+axes[0].grid(True)
+
+# Plotting T2 data
+axes[1].plot(gc_2023_avg_t2.index, gc_2023_avg_t2.values, label='GC 23-24 T2', marker='o', color='pink')
+axes[1].plot(sv_2023_avg_t2.index, sv_2023_avg_t2.values, label='SV 23-24 T2', marker='o', color='yellow')
+axes[1].plot(gc_2024_avg_t2.index, gc_2024_avg_t2.values, label='GC 24-25 T2', marker='o', color='purple')
+axes[1].plot(sv_2024_avg_t2.index, sv_2024_avg_t2.values, label='SV 24-25 T2', marker='o', color='black')
+axes[1].set_xlabel('Period')
+axes[1].set_ylabel('Average Absences')
+axes[1].set_title('Average Absences Per Period - T2')
+axes[1].legend()
+axes[1].grid(True)
+plt.tight_layout()
+plt.show()
+# Make the line chart for T1 and T2 side by side
+fig, axes = plt.subplots(1, 2, figsize=(18, 8), sharey=True)
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -231,3 +246,26 @@ print(f'T2 Mean SV absences before: {mean_sv_2023_t2:.2f}')
 print(f'T2 Mean GC absences after: {mean_gc_2024_t2:.2f}')
 print(f'T2 Mean SV absences after: {mean_sv_2024_t2:.2f}')
 print(f'T2 DID in mean absences: {did_t2:.2f}')
+# Make the line chart for T1 and T2 side by side
+fig, axes = plt.subplots(1, 2, figsize=(18, 8), sharey=True)
+
+# Plotting T1 differences
+axes[0].plot(diff_2023_t1.index, diff_2023_t1.values, label='Diff 23-24 (SV-GC) T1', marker='x', color='purple', linestyle='--')
+axes[0].plot(diff_2024_t1.index, diff_2024_t1.values, label='Diff 24-25 (SV-GC) T1', marker='x', color='brown', linestyle='--')
+axes[0].set_xlabel('Period')
+axes[0].set_ylabel('Average Absences / Difference')
+axes[0].set_title('T1 SV-GC Differences')
+axes[0].legend()
+axes[0].grid(True)
+
+# Plotting T2 differences
+axes[1].plot(diff_2023_t2.index, diff_2023_t2.values, label='Diff 23-24 (SV-GC) T2', marker='x', color='blue', linestyle='--')
+axes[1].plot(diff_2024_t2.index, diff_2024_t2.values, label='Diff 24-25 (SV-GC) T2', marker='x', color='green', linestyle='--')
+axes[1].set_xlabel('Period')
+axes[1].set_title('T2 SV-GC Differences')
+axes[1].legend()
+axes[1].grid(True)
+
+# Adjust layout and show the plot
+plt.tight_layout()
+plt.show()
