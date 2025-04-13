@@ -28,6 +28,39 @@ for df_name, df in zip(
         df.rename(columns={'number': 'Number'}, inplace=True)
     df['Number'] = df['Number'].astype(str)  # Ensure consistency
     locals()[df_name] = df.merge(demographics, on='Number', how='left')
+#Naive graph approach 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Data for plotting
+data = {
+    'School': ['GC', 'SV', 'GC', 'SV'],
+    'Year': ['2023', '2023', '2024', '2024'],
+    'Trimester': ['T1', 'T1', 'T1', 'T1'],
+    'Average Absences': [gc_2023['Total'].mean(), sv_2023['Total'].mean(), gc_2024_t1['Total'].mean(), sv_2024_t1['Total'].mean()]
+}
+df_plot = pd.DataFrame(data)
+
+data_t2 = {
+    'School': ['GC', 'SV', 'GC', 'SV'],
+    'Year': ['2023', '2023', '2024', '2024'],
+    'Trimester': ['T2', 'T2', 'T2', 'T2'],
+    'Average Absences': [gc_2023_t2['Total'].mean(), sv_2023_t2['Total'].mean(), gc_2024_t2['Total'].mean(), sv_2024_t2['Total'].mean()]
+}
+df_plot_t2 = pd.DataFrame(data_t2)
+
+df_plot = pd.concat([df_plot, df_plot_t2])
+
+# Plotting
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Year', y='Average Absences', hue='School', data=df_plot, palette=['blue', 'orange'])
+plt.title('Naive Comparison of Average Absences Between Schools (T1 and T2)')
+plt.ylabel('Average Absences')
+plt.xlabel('Year')
+plt.legend(title='School')
+plt.grid(axis='y', linestyle='--')
+plt.tight_layout()
+plt.show()
 
 #######################################################################
 # Input column you want to filter 

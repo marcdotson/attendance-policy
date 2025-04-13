@@ -124,7 +124,7 @@ print("If the matched comparison shows no significant difference, it suggests th
 # Boxplot side-by-side by school
 fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
 sns.boxplot(ax=axes[0], x="School", y="ChangeInAbsences", data=matched_df)
-axes[0].set_xticks([0, 1])
+axes[0].set_xticks([0, 1]) 
 axes[0].set_xticklabels(["GC (Control)", "SV (Policy)"])
 axes[0].set_title("Change in Absences (Matched Students)")
 axes[0].set_ylabel("Change in Absences")
@@ -135,12 +135,17 @@ avg_changes = pd.DataFrame({
     "Unmatched": unmatched_diff
 })
 
-avg_changes.T.plot(kind="bar", ax=axes[1])
+avg_changes.T.plot(kind="bar", ax=axes[1], color=["green", "blue"])
 axes[1].set_title("Average Change in Absences (Matched vs. Unmatched)")
 axes[1].set_ylabel("Average Change")
 axes[1].grid(axis="y")
 axes[1].legend(title="School", labels=["GC (Control)", "SV (Policy)"])
-
+for p in axes[1].patches:
+    axes[1].annotate(f'{p.get_height():.2f}', 
+                (p.get_x() + p.get_width() / 2., p.get_height()), 
+                ha='center', va='center', 
+                xytext=(0, 5), textcoords='offset points')
+    
 plt.tight_layout()
 plt.show()
 
@@ -150,13 +155,18 @@ avg_changes = pd.DataFrame({
     "Unmatched": unmatched_diff
 })
 
-avg_changes.T.plot(kind="bar", figsize=(8, 6))
+ax = avg_changes.T.plot(kind="bar", figsize=(8, 6), color=["green", "blue"])
 plt.title("Average Absence Change (Matched vs Unmatched)")
 plt.ylabel("Avg. Change in Absences")
 plt.xticks(rotation=0)
 plt.grid(axis="y")
 plt.legend(title="School", labels=["GC (Control)", "SV (Policy)"])
 plt.tight_layout()
+for p in ax.patches:
+    ax.annotate(f'{p.get_height():.2f}', 
+                (p.get_x() + p.get_width() / 2., p.get_height()), 
+                ha='center', va='center', 
+                xytext=(0, 5), textcoords='offset points')
 plt.show()
 
 # =====================
@@ -194,10 +204,15 @@ def plot_group_diffs(df, group_col, title=None, filename="plot.png"):
     if plot_data:
         df_plot = pd.DataFrame(plot_data).melt(id_vars=group_col, var_name="School", value_name="AvgChange")
         plt.figure(figsize=(8, 5))
-        sns.barplot(data=df_plot, x=group_col, y="AvgChange", hue="School")
+        ax = sns.barplot(data=df_plot, x=group_col, y="AvgChange", hue="School", palette=["green", "blue"])
         plt.title(title or f"Average Change in Absences by {group_col}")
         plt.ylabel("Avg. Change (Post - Pre)")
         plt.grid(axis="y")
+        for p in ax.patches:
+            ax.annotate(f'{p.get_height():.2f}', 
+                        (p.get_x() + p.get_width() / 2., p.get_height()), 
+                        ha='center', va='center', 
+                        xytext=(0, 5), textcoords='offset points')
         plt.tight_layout()
         plt.savefig(filename)
         plt.close()
@@ -225,10 +240,15 @@ if not race_data.empty and "Race" in race_data.columns:
     race_df = pd.DataFrame(race_plot)
     if not race_df.empty:
         plt.figure(figsize=(8, 5))
-        sns.barplot(data=race_df, x="Race", y="AvgChange", hue="School")
+        ax = sns.barplot(data=race_df, x="Race", y="AvgChange", hue="School", palette=["green", "blue"])
         plt.title("Average Change in Absences by Race (Matched Students)")
         plt.ylabel("Avg. Change (Post - Pre)")
         plt.grid(axis="y")
+        for p in ax.patches:
+            ax.annotate(f'{p.get_height():.2f}', 
+                        (p.get_x() + p.get_width() / 2., p.get_height()), 
+                        ha='center', va='center', 
+                        xytext=(0, 5), textcoords='offset points')
         plt.tight_layout()
         plt.savefig("plot_race.png")
         plt.close()

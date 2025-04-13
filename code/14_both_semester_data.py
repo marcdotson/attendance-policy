@@ -113,7 +113,7 @@ bar_df = matched_df.groupby("School")["ChangeInAbsences"].mean().reset_index()
 bar_df["School"] = bar_df["School"].map({0: "GC (Control)", 1: "SV (Policy)"})
 
 plt.figure(figsize=(7, 5))
-sns.barplot(data=bar_df, x="School", y="ChangeInAbsences", palette=["#4C72B0", "#DD8452"])
+sns.barplot(data=bar_df, x="School", y="ChangeInAbsences", palette=["green", "blue"])
 plt.title("Change in Absences After Policy (Matched Students)")
 plt.ylabel("Absence Change (Post - Pre)")
 plt.xlabel("")
@@ -130,4 +130,3 @@ plot_trend["Total"] = pd.to_numeric(plot_trend["Total"], errors="coerce")
 
 plot_df = plot_trend.groupby(["Year", "Trimester", "School"])["Total"].mean().reset_index()
 plot_df["School"] = plot_df["School"].map({0: "GC (Control)", 1: "SV (Policy)"})
-

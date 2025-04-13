@@ -112,12 +112,13 @@ import matplotlib.pyplot as plt
 
 # Group means
 group_means = df_2024_matched.groupby("School_from_attendance")["Total"].mean()
-group_labels = ["GC (Control)", "SV (Policy)"]
+group_labels = ["GC", "SV"]
+colors = ["green", "blue"]
 
 # Bar chart
 plt.figure(figsize=(8, 6))
-plt.bar(group_labels, group_means, color=["blue", "orange"])
-plt.title("Average Post-Policy Absences (Matched Students)")
+plt.bar(group_labels, group_means, color=colors)
+plt.title("Average Post-Policy Absences (Matched Students)",)
 plt.ylabel("Average Absences")
 plt.ylim(0, max(group_means) + 1)
 plt.grid(axis="y", linestyle="--", alpha=0.5)
@@ -127,8 +128,8 @@ plt.show()
 import seaborn as sns
 
 plt.figure(figsize=(8, 6))
-sns.boxplot(x="School_from_attendance", y="Total", data=df_2024_matched, palette=["blue", "orange"])
-plt.xticks([0, 1], ["GC (Control)", "SV (Policy)"])
+sns.boxplot(x="School_from_attendance", y="Total", data=df_2024_matched, palette=colors)
+plt.xticks([0, 1], ["GC", "SV"])  # Set labels for the x-axis
 plt.title("Distribution of Post-Policy Absences (Matched Students)")
 plt.ylabel("Absences")
 plt.grid(True, axis="y", linestyle="--", alpha=0.5)
@@ -146,15 +147,24 @@ df_2024_matched["Grade Level"] = pd.to_numeric(df_2024_matched["Grade Level"], e
 df_2024_matched["Total"] = pd.to_numeric(df_2024_matched["Total"], errors="coerce")
 
 # Group by grade and school
-grade_grouped = df_2024_matched.groupby(["Grade Level", "School_from_attendance"])["Total"].mean().unstack()
+grade_grouped = df_2024_matched[df_2024_matched["Grade Level"].isin([10, 11, 12])].groupby(["Grade Level", "School_from_attendance"])["Total"].mean().unstack().fillna(0)
 
 # Plot
-grade_grouped.plot(kind="bar", figsize=(10, 6))
-plt.title("Average Absences by Grade Level")
+ax = grade_grouped.plot(kind="bar", figsize=(10, 6), color = ["green", "blue"])
+plt.title("Average Absences by Grade Level",)
 plt.ylabel("Average Absences")
 plt.xlabel("Grade Level")
-plt.xticks(rotation=0)
-plt.legend(["GC (Control)", "SV (Policy)"], title="School")
+
+# Add labels to bars
+for p in ax.patches:
+    ax.annotate(f'{p.get_height():.1f}', 
+                (p.get_x() + p.get_width() / 2., p.get_height()), 
+                ha='center', va='center', 
+                xytext=(0, 5), textcoords='offset points')
+
+
+plt.xticks(rotation=0, ticks=[0,1,2], labels=["10th", "11th", "12th"])
+plt.legend(["GC", "SV"], title="School", loc='upper right')
 plt.grid(axis="y", linestyle="--", alpha=0.5)
 plt.tight_layout()
 plt.show()
@@ -180,28 +190,40 @@ for race in race_cols:
 
     race_avgs.append({
         "Race": race,
-        "GC (Control)": gc_mean,
-        "SV (Policy)": sv_mean,
+        "GC": gc_mean,
+        "SV": sv_mean,
         "Count": count
     })
 
 # Create race_df
-race_df = pd.DataFrame(race_avgs)
+race_df = pd.DataFrame(race_avgs).fillna(0)
 
 # Optional: filter races with at least 5 students (adjustable)
 race_df = race_df[race_df["Count"] >= 5]
 
 # Melt for plotting
-race_melted = race_df.melt(id_vars="Race", value_vars=["GC (Control)", "SV (Policy)"],
-                           var_name="School", value_name="Average Absences")
+race_melted = race_df.melt(id_vars="Race", value_vars=["GC", "SV"],
+                           var_name="School", value_name="Average Absences") 
 
 # Plot
-plt.figure(figsize=(10, 6))
-sns.barplot(x="Race", y="Average Absences", hue="School", data=race_melted, palette=["blue", "orange"])
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(x="Race", y="Average Absences", hue="School", data=race_melted, palette=colors, ax=ax)
 plt.title("Average Absences by Race (Students with N ≥ 5)")
 plt.xticks(rotation=45)
 plt.ylabel("Average Absences")
 plt.xlabel("Race")
 plt.grid(axis="y", linestyle="--", alpha=0.5)
+plt.ylim(0, max(race_melted["Average Absences"]) + 1)
+# Add labels to bars
+for p in ax.patches:
+    ax.annotate(f'{p.get_height():.1f}', 
+                (p.get_x() + p.get_width() / 2., p.get_height()), 
+                ha='center', va='center', 
+                xytext=(0, 5), textcoords='offset points')
+
+# Move legend outside the plot
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
 plt.tight_layout()
 plt.show()
