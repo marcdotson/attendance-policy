@@ -15,6 +15,7 @@ file_info = [
     ("./data/24-25 T2 Attendance.xlsx", "SV - Absences", 2024, 2, "SV")
 ]
 
+
 # Path to demographics file (optional — used for merging if available)
 demographics_path = "./data/Attendance Demographics 2024-2025.csv"
 
@@ -42,6 +43,12 @@ combined = pd.concat(frames, ignore_index=True)
 combined["Total"] = pd.to_numeric(combined["Total"], errors="coerce")
 combined["Trimester"] = pd.to_numeric(combined["Trimester"], errors="coerce")
 
+# Add a row for the missing trimester 3
+missing_row = pd.DataFrame([{"Time Period": "2023 T3", "School": "GC", "Total": None},
+                            {"Time Period": "2023 T3", "School": "SV", "Total": None}])
+
+
+
 # ========= AGGREGATE: Average Absences =========
 combined["Time Period"] = combined.apply(lambda row: f"{row['Year']} T{row['Trimester']}", axis=1)
 
@@ -50,6 +57,9 @@ avg_summary = (
     .mean()
     .reset_index().sort_values(["Time Period", "School"])
 )
+avg_summary = pd.concat([avg_summary, missing_row], ignore_index=True).sort_values(["Time Period", "School"])
+
+
 
 # ========= PLOT: Raw Averages (Bar Chart) =========
 plt.figure(figsize=(10, 6))
@@ -65,8 +75,6 @@ plt.show()
 diff_summary = pd.DataFrame()
 for trimester in [1, 2]:
     # Filter data for the current trimester
-    
-    
     trim_data = avg_summary[avg_summary["Time Period"].str.contains(f"T{trimester}")]
 
     # Pivot the table to have schools as columns and years as index
@@ -84,11 +92,11 @@ for trimester in [1, 2]:
     # Append to the overall summary
     diff_summary = pd.concat([diff_summary, trim_pivot], ignore_index=True)
 
-# # ========= PLOT: Raw Differences (Bar Chart) =========
-# plt.figure(figsize=(10, 6))
-# sns.barplot(data=diff_summary, x="Time Period", y="Difference (SV-GC)", palette=["purple"])
-# plt.title("Raw Difference in Average Absences (SV - GC) by Trimester")
-# plt.ylabel("Difference (SV - GC)")
-# plt.xlabel("Time Period")
-# plt.grid(True)
-# plt.show()
+# ========= PLOT: Raw Differences (Bar Chart) =========
+plt.figure(figsize=(10, 6))
+sns.barplot(data=diff_summary, x="Time Period", y="Difference (SV-GC)", palette=["purple"])
+plt.title("Raw Difference in Average Absences (SV - GC) by Trimester")
+plt.ylabel("Difference (SV - GC)")
+plt.xlabel("Time Period")
+plt.grid(True)
+plt.show()

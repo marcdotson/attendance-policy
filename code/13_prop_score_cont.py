@@ -136,7 +136,7 @@ avg_changes = pd.DataFrame({
 })
 
 avg_changes.T.plot(kind="bar", ax=axes[1], color=["green", "blue"])
-axes[1].set_title("Average Change in Absences (Matched vs. Unmatched)")
+axes[1].set_title("Average Change in Absences (Across Trimesters)")
 axes[1].set_ylabel("Average Change")
 axes[1].grid(axis="y")
 axes[1].legend(title="School", labels=["GC (Control)", "SV (Policy)"])
@@ -156,7 +156,7 @@ avg_changes = pd.DataFrame({
 })
 
 ax = avg_changes.T.plot(kind="bar", figsize=(8, 6), color=["green", "blue"])
-plt.title("Average Absence Change (Matched vs Unmatched)")
+plt.title("Average Absence Change (Across Trimesters)")
 plt.ylabel("Avg. Change in Absences")
 plt.xticks(rotation=0)
 plt.grid(axis="y")
@@ -254,8 +254,17 @@ if not race_data.empty and "Race" in race_data.columns:
         plt.close()
         print("Saved plot_race.png")
 
-# Gender plot
-plot_group_diffs(matched_df, "Gender", title="Average Change in Absences by Gender", filename="plot_gender.png")
 
-# ESL plot
-plot_group_diffs(matched_df, "ESL", title="Average Change in Absences by ESL", filename="plot_esl.png")
+# BONUS: Compare Propensity Score Distributions (Pre-Matching)
+# =====================
+plt.figure(figsize=(8, 5))
+sns.kdeplot(data=df_2023[df_2023["School"] == 0], x="PropensityScore", label="GC (Control)", fill=True, alpha=0.5, color="#2ca02c")
+sns.kdeplot(data=df_2023[df_2023["School"] == 1], x="PropensityScore", label="SV (Policy)", fill=True, alpha=0.5, color="#1f77b4")
+plt.title("Propensity Score Distributions by School")
+plt.xlabel("Propensity Score")
+plt.ylabel("Density")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("propensity_distribution_before.png", dpi=300)
+plt.close()
