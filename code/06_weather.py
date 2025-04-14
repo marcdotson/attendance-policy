@@ -1,4 +1,4 @@
-#Data aggregation/exploration of weather during the 2 years 
+#Data aggregation/exploration of weather during the 2 years (Didn't end up using, has future use)
 
 import pandas as pd
 import matplotlib.pyplot as plt
