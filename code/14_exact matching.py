@@ -1,4 +1,5 @@
-# exact_matching_analysis.py
+# uses exact matching to dive futher into finding similar students at GC that match with SV
+#Similar to prop. scoring 
 import pandas as pd
 import numpy as np
 from scipy.stats import ttest_ind

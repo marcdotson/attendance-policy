@@ -1,3 +1,4 @@
+#Continuation on prop scoring, just removing duplicates didn't change too much 
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
@@ -254,9 +255,3 @@ if not race_data.empty and "Race" in race_data.columns:
         plt.savefig("plot_race.png")
         plt.close()
         print("Saved plot_race.png")
-
-# Gender plot
-plot_group_diffs(matched_df, "Gender", title="Average Change in Absences by Gender", filename="plot_gender.png")
-
-# ESL plot
-plot_group_diffs(matched_df, "ESL", title="Average Change in Absences by ESL", filename="plot_esl.png")

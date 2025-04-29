@@ -1,14 +1,10 @@
-#Data aggregation/exploration of weather during the 2 years (Didn't end up using, has future use)
+#Data aggregation/exploration of weather during the 2 years (Didn't end up using, has potential future use)
 
+# Import datasets with correctly formatted file paths (note this only includes trimester 1 data, if want future use make sure to include all trimesters)
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-
-
-
-
-# Import datasets with correctly formatted file paths
 df_2023 = pd.read_csv(r'data\84321 2023-08-24 to 2023-11-27 (1).csv')
 df_2024 = pd.read_csv(r'data\84321 2024-08-22 to 2024-11-18 (1).csv')
 
