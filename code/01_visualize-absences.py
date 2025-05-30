@@ -44,22 +44,21 @@ sv_2023_tot_t3 = sv_2023_t3['Total'].mean()
 gc_2024_tot_t3 = gc_2024_t3['Total'].mean()
 sv_2024_tot_t3 = sv_2024_t3['Total'].mean()
 
-# Visualize absences trend
+# Visualize overall absences trend
 time_periods = ['2023 T1', '2023 T2', '2023 T3', '2024 T1', '2024 T2', '2024 T3']
 gc_absences = [gc_2023_tot_t1, gc_2023_tot_t2, gc_2023_tot_t3, gc_2024_tot_t1, gc_2024_tot_t2, gc_2024_tot_t3]
 sv_absences = [sv_2023_tot_t1, sv_2023_tot_t2, sv_2023_tot_t3, sv_2024_tot_t1, sv_2024_tot_t2, sv_2024_tot_t3]
 
+# Plot
 plt.figure(figsize=(10,6))
 plt.plot(time_periods, gc_absences, marker='o', linestyle='-', color='green', label='GC')
 plt.plot(time_periods, sv_absences, marker='o', linestyle='-', color='blue', label='SV')
 
-# Labels and title
-plt.xlabel('Time Period')
+# Labels, title, and legend
+plt.xlabel('Year and Trimester')
 plt.ylabel('Average Absences')
 plt.title('Trend of Average Absences by School')
 plt.grid(True)
-
-# Legend
 plt.legend(title='School')
 
 #----------------------------------------
@@ -83,6 +82,42 @@ sv_2023_avg_t3 = sv_2023_t3[periods].mean()
 gc_2024_avg_t3 = gc_2024_t3[periods].mean()
 sv_2024_avg_t3 = sv_2024_t3[periods].mean()
 
+# Visualize absences trend by period
+gc_2023_avg = pd.DataFrame({
+    'avg_t1': gc_2023_avg_t1.values,
+    'avg_t2': gc_2023_avg_t2.values,
+    'avg_t3': gc_2023_avg_t3.values
+}).T.mean()
 
+gc_2024_avg = pd.DataFrame({
+    'avg_t1': gc_2024_avg_t1.values,
+    'avg_t2': gc_2024_avg_t2.values,
+    'avg_t3': gc_2024_avg_t3.values
+}).T.mean()
 
+sv_2023_avg = pd.DataFrame({
+    'avg_t1': sv_2023_avg_t1.values,
+    'avg_t2': sv_2023_avg_t2.values,
+    'avg_t3': sv_2023_avg_t3.values
+}).T.mean()
+
+sv_2024_avg = pd.DataFrame({
+    'avg_t1': sv_2024_avg_t1.values,
+    'avg_t2': sv_2024_avg_t2.values,
+    'avg_t3': sv_2024_avg_t3.values
+}).T.mean()
+
+# Plot
+plt.figure(figsize=(10,6))
+plt.plot(periods, gc_2023_avg.values, label='GC 23-24', marker='o', color='darkgreen')
+plt.plot(periods, sv_2023_avg.values, label='SV 23-24', marker='o', color='darkblue')
+plt.plot(periods, gc_2024_avg.values, label='GC 24-25', marker='o', color='lightgreen')
+plt.plot(periods, sv_2024_avg.values, label='SV 24-25', marker='o', color='lightblue')
+
+# Labels, title, and legend
+plt.xlabel('Period')
+plt.ylabel('Average Absences')
+plt.title('Trend of Average Absences Per Period')
+plt.grid(True)
+plt.legend()
 
