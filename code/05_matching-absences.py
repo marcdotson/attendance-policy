@@ -1,18 +1,8 @@
 #----------------------------------------
-# Purpose: Propensity Score Matching Baseline (vs Naive Baseline)
-#----------------------------------------
-#
-# This script uses *propensity score matching* (PSM) to match similar students 
-# between GC (control) and SV (treatment) based on demographics (gender, race, ESL, grade) and pre-policy absences.
-# 
-# In contrast to the naive baseline (which simply averages absences across schools),
-# this matching approach adjusts for selection bias and provides stronger causal evidence
-# about the effect of the attendance policy.
-#
-# This script handles Trimester 1 (T1), Trimester 2 (T2), and is expandable for future T3.
-#
+# Propensity Score Matching for Absences: GC vs SV (T1, T2, & T3)
 #----------------------------------------
 
+# Import libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,10 +12,9 @@ from sklearn.neighbors import NearestNeighbors
 from scipy.stats import ttest_ind
 
 #----------------------------------------
-# Load Data
+# 1. Load Data
 #----------------------------------------
 
-# Load demographics
 demographics = pd.read_csv('data/Attendance Demographics 2024-2025.csv', dtype=str, low_memory=False)
 demographics.rename(columns={'Student Number': 'Number'}, inplace=True)
 
@@ -42,12 +31,17 @@ attendance_files = {
         ('data/23-24 T2 Attendance.xlsx', 'SV - Absence', 1, 2023),
         ('data/24-25 T2 Attendance.xlsx', 'GC - Absences', 0, 2024),
         ('data/24-25 T2 Attendance.xlsx', 'SV - Absences', 1, 2024)
-    ]
-    # Add T3 here when available
+    ],
+    'T3': [
+        ('data/23-24 T3 Attendance.xlsx', 'GC - Absence', 0, 2023),
+        ('data/23-24 T3 Attendance.xlsx', 'SV - Absence', 1, 2023),
+        ('data/24-25 T3 Attendance.xlsx', 'GC - Absence', 0, 2024),
+        ('data/24-25 T3 Attendance.xlsx', 'SV - Absence', 1, 2024)
+    ],
 }
 
 #----------------------------------------
-# Matching Function
+# 2. Run the Matching Function
 #----------------------------------------
 
 def run_matching(trimester_label, files):
@@ -110,10 +104,7 @@ def run_matching(trimester_label, files):
 
     return df_2024_matched
 
-#----------------------------------------
-# Run Matching for Each Trimester
-#----------------------------------------
-
+# Run the matching function for all trimesters
 all_matched = []
 for trimester_label, files in attendance_files.items():
     matched = run_matching(trimester_label, files)
@@ -122,13 +113,12 @@ for trimester_label, files in attendance_files.items():
 df_matched_combined = pd.concat(all_matched, ignore_index=True)
 
 #----------------------------------------
-# Analyze Matched Results
+# 3. Analyze Matched Results
 #----------------------------------------
 
+# Absences by trimester
 colors = ['green', 'blue']
-
-# Barplot: Group Means
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(10, 6))
 sns.barplot(x='Trimester', y='Total', hue='School_from_attendance', data=df_matched_combined, palette=colors, estimator=np.mean, errorbar=None)
 plt.title("Average Post-Policy Absences by Trimester (Matched Students)")
 plt.ylabel("Average Absences")
@@ -138,15 +128,10 @@ plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 plt.show()
 
-#----------------------------------------
-# Break Down by Grade
-#----------------------------------------
-
+# Absences by grade level
 df_matched_combined['Grade Level'] = pd.to_numeric(df_matched_combined['Grade Level'], errors='coerce')
-
-grade_grouped = df_matched_combined[df_matched_combined['Grade Level'].isin([10, 11, 12])]
+grade_grouped = df_matched_combined[df_matched_combined['Grade Level'].isin([9, 10, 11, 12])]
 grade_grouped = grade_grouped.groupby(['Grade Level', 'School_from_attendance'])['Total'].mean().unstack().fillna(0)
-
 fig, ax = plt.subplots(figsize=(10, 6))
 grade_grouped.plot(kind='bar', ax=ax, color=colors)
 plt.title("Average Absences by Grade Level (Matched Students)")
@@ -155,7 +140,6 @@ plt.xlabel("Grade Level")
 plt.xticks(rotation=0, ticks=[0,1,2], labels=["10th", "11th", "12th"])
 plt.legend(["GC", "SV"], title="School")
 plt.grid(axis='y', linestyle='--', alpha=0.5)
-
 for p in ax.patches:
     ax.annotate(f'{p.get_height():.1f}', 
                 (p.get_x() + p.get_width()/2., p.get_height()),
@@ -164,10 +148,7 @@ for p in ax.patches:
 plt.tight_layout()
 plt.show()
 
-#----------------------------------------
-# Break Down by Race
-#----------------------------------------
-
+# Absences by race
 race_cols = ["Hispanic", "White", "Black", "Asian", "Pacific Islander", "American Indian"]
 for col in race_cols:
     df_matched_combined[col] = df_matched_combined[col].apply(lambda x: 1 if str(x).strip().upper() == 'Y' else 0)
@@ -176,7 +157,6 @@ race_avgs = []
 for race in race_cols:
     gc_vals = df_matched_combined[(df_matched_combined[race] == 1) & (df_matched_combined['School_from_attendance'] == 0)]['Total']
     sv_vals = df_matched_combined[(df_matched_combined[race] == 1) & (df_matched_combined['School_from_attendance'] == 1)]['Total']
-
     race_avgs.append({
         'Race': race,
         'GC': gc_vals.mean(),
@@ -184,7 +164,6 @@ for race in race_cols:
     })
 
 race_df = pd.DataFrame(race_avgs).melt(id_vars='Race', var_name='School', value_name='Average Absences')
-
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(x='Race', y='Average Absences', hue='School', data=race_df, palette=colors)
 plt.title("Average Absences by Race (Matched Students)")
@@ -192,7 +171,6 @@ plt.xticks(rotation=45)
 plt.ylabel("Average Absences")
 plt.xlabel("Race")
 plt.grid(axis='y', linestyle='--', alpha=0.5)
-
 for p in ax.patches:
     ax.annotate(f'{p.get_height():.1f}', 
                 (p.get_x() + p.get_width()/2., p.get_height()),
@@ -200,3 +178,38 @@ for p in ax.patches:
 
 plt.tight_layout()
 plt.show()
+
+# Absences by ESL status
+esl_grouped = df_matched_combined.groupby(['ESL', 'School_from_attendance'])['Total'].mean().unstack().fillna(0)
+fig, ax = plt.subplots(figsize=(10, 6))
+esl_grouped.plot(kind='bar', ax=ax, color=colors)
+plt.title("Average Absences by ESL Status (Matched Students)")
+plt.ylabel("Average Absences")
+plt.xlabel("ESL Status")
+plt.legend(["GC", "SV"], title="School")
+plt.grid(axis='y', linestyle='--', alpha=0.5)
+for p in ax.patches:
+    ax.annotate(f'{p.get_height():.1f}', 
+                (p.get_x() + p.get_width()/2., p.get_height()),
+                ha='center', va='center', xytext=(0, 5), textcoords='offset points')
+
+plt.tight_layout()
+plt.show()
+
+# Absences by gender
+gender_grouped = df_matched_combined.groupby(['Gender', 'School_from_attendance'])['Total'].mean().unstack().fillna(0)
+fig, ax = plt.subplots(figsize=(10, 6))
+gender_grouped.plot(kind='bar', ax=ax, color=colors)
+plt.title("Average Absences by Gender (Matched Students)")
+plt.ylabel("Average Absences")
+plt.xlabel("Gender")
+plt.legend(["GC", "SV"], title="School")
+plt.grid(axis='y', linestyle='--', alpha=0.5)
+for p in ax.patches:
+    ax.annotate(f'{p.get_height():.1f}', 
+                (p.get_x() + p.get_width()/2., p.get_height()),
+                ha='center', va='center', xytext=(0, 5), textcoords='offset points')
+
+plt.tight_layout()
+plt.show()
+

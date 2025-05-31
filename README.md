@@ -20,10 +20,7 @@ in and across high schools.
   `02_clean-data.py`) and functions in `/code/src`.
 - `/data` Simulated and real data, the latter not pushed.
 - `/figures` PNG images and plots.
-- `/output` Output from model runs, not pushed.
-- `/presentations` Presentation slides.
 - `/private` A catch-all folder for miscellaneous files, not pushed.
-- `/writing` Reports, posts, and case studies.
 - `/.venv` Hidden project library, not pushed.
 - `.gitignore` Hidden Git instructions file.
 - `.python-version` Hidden Python version for the reproducible
